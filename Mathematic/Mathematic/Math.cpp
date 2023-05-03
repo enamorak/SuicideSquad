@@ -11,13 +11,14 @@ using namespace std;
 int fun() {
     return rand() % 100 + 1;
 }
-void task2() {
+string task2() {
     const int SIZE = 9;
     int a[SIZE][SIZE]; // матрица связей
     int d[SIZE]; // минимальное расстояние
     int v[SIZE]; // посещенные вершины
     int temp, minindex, min;
-    int begin_index = 0;
+    int begin_index = rand() % 9 + 1 - 1; //индекс начальной вершины, вершина - 1
+    int end = rand() % 9 + 1 - 1; // индекс конечной вершины, вершиина - 1
     // Инициализация матрицы связей
     for (int i = 0; i < SIZE; i++)
     {
@@ -130,7 +131,7 @@ void task2() {
         }
     }
 
-    cout << "Найти кратчайший пути от вершины 1 до вершины 4\nМатрица смежностей:\n";
+    std::cout << "Найти кратчайший пути от вершины " << begin_index + 1 << " до вершины " << end + 1 << "\nМатрица смежностей:\n";
     // Вывод матрицы связей
     for (int i = 0; i < SIZE; i++){
         for (int j = 0; j < SIZE; j++) {
@@ -179,7 +180,6 @@ void task2() {
 
     // Восстановление пути
     int ver[SIZE]; // массив посещенных вершин
-    int end = 3; // индекс конечной вершины = 5 - 1
     ver[0] = end + 1; // начальный элемент - конечная вершина
     int k = 1; // индекс предыдущей вершины
     int weight = d[end]; // вес конечной вершины
@@ -200,13 +200,43 @@ void task2() {
             }
     }
     string st = "";
-    cout << "\nВывод кратчайшего пути\n";
+    std::cout << "\nВывод кратчайшего пути\n";
     for (int i = k - 1; i >= 0; i--) {
         st += to_string(ver[i]);
     }
-    cout << st;
+    cout << st << '\n';
+    return st;
 }
 
+void randvec(vector<vector<int>>& g, int n, int m) {
+    //n, m размер матрицы, колво x y вершин
+    int k; //случайное число для заполнения матрицы
+    int f; //случайнок кол-во соединений от вершины
+    //n = rand() % 10 + 1; m = rand() % 10 + 1;
+    /*vector<vector<int>> g(n);*/
+    for (int i = 0; i < n; i++) {
+        f = rand() % (m + 1);
+        int p = m; //кол=во элементов в векторе с доступными вершинами
+        vector<int> nums; //вектор
+        for (int o = 0; o < p; o++) { //заполнение этого вектора
+            nums.push_back(o);
+        }
+
+        for (int j = 0; j < f; j++) {
+            k = rand() % p;
+            g[i].push_back(nums[k]);
+            p--;
+            nums.erase(nums.begin() + k);
+        }
+    }
+
+    //for (int i = 0; i < n; i++) { //надо удалить, вывод матрицы смежности
+    //    for (auto j : g[i]) {
+    //        cout << j << ' ';
+    //    }
+    //    cout << '\n';
+    //}
+}
 bool try_kuhn(int v, vector<char>& used, vector<int>& mt, vector<vector<int>>& g) {
     if (used[v])  return false;
     used[v] = true;
@@ -219,7 +249,7 @@ bool try_kuhn(int v, vector<char>& used, vector<int>& mt, vector<vector<int>>& g
     }
     return false;
 }
-void task7() {
+int task7() {
     int n, k;
     n = rand() % 10 + 1;
     k = rand() % 10 + 1;
@@ -227,40 +257,21 @@ void task7() {
     vector<int> mt;
     vector<char> used;
     vector<int> nums;
-    cout << n << ' ' << k << '\n';
+    randvec(g, n, k);
+    std::cout << "Матрица смежностей:\n";
     for (int i = 0; i < n; i++) {
-        int p = rand() % k+1;
-        for (int j = 0; j < k; j++) {
-            cout << '\n' << j << '\n';
-            g[i].push_back(0);
+        if (g[i].empty()) {
+            std::cout << '-' << '\n';
         }
-
-        /*nums.clear();*/
+        else {
+            for (auto j : g[i]) {
+                std::cout << j << ' ';
+            }
+            std::cout << '\n';
+        }
     }
-    /*cout << n << ' ' << k << '\n';
-    for (int i = 0; i < n; i++)
-    {
-        int p = rand() % k;
-        cout << p << "\n";
-        vector<int> nums{1,2,3,4,5,6,7,8,9,10};
-        for (int j = 0; j < p; k++) {
-            int l = rand() % nums.size() + 1;
-            cout << l << '\n';
-            int u = i, v = nums[l - 1];
-            cout << u << " " << v << '\n';
-            g[u].push_back(v - 1);
+    std::cout << '\n';
 
-            auto iter = nums.begin();
-            nums.erase(iter + l - 1);
-        }
-    }*/
-    cout << "\nМатрица смежностей:\n";
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < k; j++) {
-            cout << setw(2) << g[i][j];
-        }
-        cout << '\n';
-    }
     mt.assign(k, -1);
     vector<char> used1(n);
     for (int i = 0; i < n; ++i)
@@ -275,40 +286,52 @@ void task7() {
         used.assign(n, false);
         try_kuhn(i, used, mt, g);
     }
-
-    for (int i = 0; i < k; ++i)
+    int maxi = 0; //длина максимального паросочетания
+    for (int i = 0; i < k; ++i) //потом удалить 
         if (mt[i] != -1) {
-            cout << "\n";
+            std::cout << "\n";
             printf("%d %d\n", mt[i] + 1, i + 1);
+            maxi++;
         }
+    cout << maxi << '\n';
+    return maxi;
 }
-
 
 int main()
 {
-    srand(time(NULL));
     setlocale(LC_ALL, "ru");
-    task7();
-    /*int n, k;
-    n = rand() % 10 + 1;
-    k = rand() % 10 + 1;
-    cout << n << " " << k << "\n";
-    vector < vector<int> > g(n);
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < k; j++) {
-            cout << i << " " << j << ' ';
-            g[i].push_back(j);
+    srand(time(NULL));
+    int choise = 0;
+    std::cout << "Какую задачу решить?\n1 - задача 2\n2 - задача 7\n";
+    std::cout << "Введите: ";
+    cin >> choise;
+    if (choise == 1) {
+        string right_ans;
+        right_ans = task2();
+        string ans;
+        cout << "\nВведите ответ: ";
+        cin >> ans;
+        cout << ans;
+        if (ans == right_ans) {
+            cout << "\nОтвет верный";
         }
-        cout << "\n";
-    }*/
-
-    //cout << "\nМатрица смежностей:\n";
-    //for (int i = 0; i < n; i++) {
-    //    for (int j = 0; j < k; j++) {
-    //        cout << setw(2) << g[i][j];
-    //    }
-    //    cout << '\n';
-    //}
+        else {
+            cout << "\nОтвет не верный";
+        }
+    }
+    else {
+        int right_ans;
+        right_ans = task7();
+        int ans;
+        cout << "\nВведите ответ: ";
+        cin >> ans;
+        cout << ans;
+        if (ans == right_ans) {
+            cout << "\nОтвет верный";
+        }
+        else {
+            cout << "\nОтвет не верный";
+        }
+    }
     return 0;
 }

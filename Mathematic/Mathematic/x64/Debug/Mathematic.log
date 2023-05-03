@@ -1,3 +1,3 @@
 ﻿  Math.cpp
-C:\Users\leoni\source\repos\Mathematic\Mathematic\Math.cpp(289,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-  Mathematic.vcxproj -> C:\Users\leoni\source\repos\Mathematic\x64\Debug\Mathematic.exe
+D:\math\SuicideSquad\Mathematic\Mathematic\Math.cpp(303,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  Mathematic.vcxproj -> D:\math\SuicideSquad\Mathematic\x64\Debug\Mathematic.exe
